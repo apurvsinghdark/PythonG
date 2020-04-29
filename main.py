@@ -39,11 +39,63 @@ class Deck:
         single_card = self.deck.pop()
         return single_card
 
+class Hand:
+
+    def __init__(self):
+        self.cards = []
+        self.value = 0
+        self.aces = 0
+
+    def add_card(self,card):
+        self.cards.append(card)
+        self.value += values[card.rank]
+
+        if card.rank == 'Ace' :
+            self.aces += 1
+
+
+    def adjust_card(self):
+
+        while self.value > 21 and self.aces:
+            self.value -= 10
+            self.aces -= 1
+
+
+class Chips:
+
+    def __init__(self,total):
+        self.total = 100
+        self.bet = 0
+
+    def win_bet(self):
+        self.total += self.bet
+
+    def lose_bet(self):
+        self.total -= self.bet
 
 
 
+def take_bet(chips):
+
+    while True:
+
+        try:
+            chips.bet = int(input("how many chips would you like to bet? "))
+        except:
+            print("sorry plz Enter A valid number")
+        else:
+            if chips.bet > chips.total:
+                print('Sorry, You do not have enough chips! You have : {}'.format(chips.total))
+            else:
+                break
 
 if __name__ == '__main__':
 
     test_deck = Deck()
-    print(test_deck)
+    test_deck.shuffle()
+
+    test_player = Hand()
+    #print(test_deck.deal())
+    test_player.add_card(test_deck.deal())
+    test_player.add_card(test_deck.deal())
+    test_player.value
