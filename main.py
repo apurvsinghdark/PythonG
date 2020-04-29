@@ -2,34 +2,36 @@ import random
 
 suits = ('Hearts', 'Diamonds', 'Spades', 'Clubs')
 ranks = ('Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Jack', 'Queen', 'King', 'Ace')
-values = {'Two':2, 'Three':3, 'Four':4, 'Five':5, 'Six':6, 'Seven':7, 'Eight':8, 'Nine':9, 'Ten':10, 'Jack':10,
-         'Queen':10, 'King':10, 'Ace':11}
+values = {'Two': 2, 'Three': 3, 'Four': 4, 'Five': 5, 'Six': 6, 'Seven': 7, 'Eight': 8, 'Nine': 9, 'Ten': 10,
+          'Jack': 10,
+          'Queen': 10, 'King': 10, 'Ace': 11}
 
 playing = True
 
-#Card Class
+
+# Card Class
 
 class Card:
-    def __init__(self,suit,rank):
+    def __init__(self, suit, rank):
         self.suit = suit
         self.rank = rank
 
     def __str__(self):
-        return self.rank +  ' of '+ self.suit
+        return self.rank + ' of ' + self.suit
 
 
 class Deck:
 
     def __init__(self):
-        self.deck = [] #empty List
+        self.deck = []  # empty List
         for suit in suits:
             for rank in ranks:
-                self.deck.append(Card(suit,rank)) #build Card objects and them to the list
+                self.deck.append(Card(suit, rank))  # build Card objects and them to the list
 
     def __str__(self):
         deck_comp = ''
         for card in self.deck:
-            deck_comp += '\n' +card.__str__() # collect collection of card from __init__ function
+            deck_comp += '\n' + card.__str__()  # collect collection of card from __init__ function
         return 'The deck has: ' + deck_comp
 
     def shuffle(self):
@@ -39,6 +41,7 @@ class Deck:
         single_card = self.deck.pop()
         return single_card
 
+
 class Hand:
 
     def __init__(self):
@@ -46,13 +49,12 @@ class Hand:
         self.value = 0
         self.aces = 0
 
-    def add_card(self,card):
+    def add_card(self, card):
         self.cards.append(card)
         self.value += values[card.rank]
 
-        if card.rank == 'Ace' :
+        if card.rank == 'Ace':
             self.aces += 1
-
 
     def adjust_card(self):
 
@@ -63,7 +65,7 @@ class Hand:
 
 class Chips:
 
-    def __init__(self,total):
+    def __init__(self, total):
         self.total = 100
         self.bet = 0
 
@@ -74,9 +76,7 @@ class Chips:
         self.total -= self.bet
 
 
-
 def take_bet(chips):
-
     while True:
 
         try:
@@ -89,13 +89,60 @@ def take_bet(chips):
             else:
                 break
 
-if __name__ == '__main__':
 
+def hit(deck, hand):
+    single_card = deck.deal()
+    hand.add_card(single_card)
+    hand.adjust_card()
+
+
+def hit_or_stand(deck, hand):
+    global playing  # TO control while Loop
+
+    while True:
+        x = input('Hit or Stand? Enter h or s ')
+
+        if x[0].lower() == 'h':
+            hit(deck, hand)
+        elif x[0].lower() == 's':
+            print('Player Stands Dealers Turn')
+            playing = False
+        else:
+            print("Don't understand input please enter a valid input")
+            continue
+        break
+
+
+def player_bust(player, dealer, chips):
+    print('Bust Player')
+    chips.lose_bet()
+
+
+def player_win(player, dealer, chips):
+    print('Player Win')
+    chips.win_bet()
+
+
+def dealer_bust(player, dealer, chips):
+    print('Player Win, Dealer Bust')
+    chips.win_bet()
+
+
+def dealer_win(player, dealer, chips):
+    print('Player lose, Dealer Win')
+    chips.lose_bet()
+
+
+def push(player, dealer):
+    print("Dealer and Player tie! Push")
+
+
+if __name__ == '__main__':
     test_deck = Deck()
     test_deck.shuffle()
 
     test_player = Hand()
-    #print(test_deck.deal())
+    # print(test_deck.deal())
     test_player.add_card(test_deck.deal())
     test_player.add_card(test_deck.deal())
     test_player.value
